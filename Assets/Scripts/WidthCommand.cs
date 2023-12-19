@@ -16,7 +16,7 @@ public class WidthCommand : Command
         inputField.onValueChanged.AddListener(delegate { OnInputValueChanged(inputField); });
     }
 
-    void OnInputValueChanged(TMP_InputField inputField)
+    private void OnInputValueChanged(TMP_InputField inputField)
     {
         string inputValue = inputField.text;
 
