@@ -1,57 +1,38 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MoveCommand : Command
 {
     private float _distance;
-    private float _angle;
 
     [SerializeField]
-    private TMP_InputField distanceInputField;
+    private TMP_Text sliderValueLabel;
 
     [SerializeField]
-    private TMP_InputField angleInputField;
+    
+    private Slider distanceInput;
+
 
     protected override void Start()
     {
         base.Start();
 
-        distanceInputField.onValueChanged.AddListener(delegate { OnDistanceInputValueChanged(distanceInputField); });
-        angleInputField.onValueChanged.AddListener(delegate { OnAngleInputValueChanged(distanceInputField); });
+        distanceInput.onValueChanged.AddListener(delegate { OnDistanceInputValueChanged(distanceInput); });
+
+        sliderValueLabel.text = "Distance: " + (distanceInput.value * 0.5f);
     }
 
-    private void OnDistanceInputValueChanged(TMP_InputField inputField)
+    private void OnDistanceInputValueChanged(Slider input)
     {
-        string inputValue = inputField.text;
+        _distance = input.value * 0.5f;
 
-        if (float.TryParse(inputValue, out float floatValue))
-        {
-            _distance = floatValue;
-        }
-        else
-        {
-            Debug.LogError("Invalid input value");
-        }
-
+        sliderValueLabel.text = "Distance: " + _distance;
     }
 
-    private void OnAngleInputValueChanged(TMP_InputField inputField)
-    {
-        string inputValue = inputField.text;
-
-        if (float.TryParse(inputValue, out float floatValue))
-        {
-            _distance = floatValue;
-        }
-        else
-        {
-            Debug.LogError("Invalid input value");
-        }
-
-    }
 
     public override void Execute()
     {
-        gameController.MovePosition(_distance, _angle);
+        gameController.MovePosition(_distance);
     }
 }

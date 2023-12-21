@@ -50,6 +50,11 @@ public class Command : MonoBehaviour
         }
     }
 
+    public void Remove()
+    {
+        OnDeleteButtonClick();
+    }
+
     public virtual void Execute()
     {
 

@@ -4,25 +4,31 @@ using System.Collections.Generic;
 
 public class GameController : MonoBehaviour
 {
-    public GameObject commandBlocksPanel;
-    public GameObject codePanel;
-    public GameObject drawPanel;
-    public Button runButton;
-    public Button clearButton;
-    public LineRenderer lineRenderer;
+    [SerializeField]
+    private Transform codePanelContents;
+    [SerializeField]
+    private GameObject drawPanel;
+    [SerializeField]
+    private Button runButton;
+    [SerializeField]
+    private Button clearButton;
+    [SerializeField]
+    private LineRenderer lineRenderer;
 
-    private List<Command> commands;
-    private List<Vector3> positions;
-    private Vector3 currentPosition;
-    private float currentAngle;
-    private Color currentColor;
-    private float currentWidth;
+    private List<Command> _commands;
+    private List<Vector3> _positions;
+    private Vector3 _currentPosition = Vector3.zero;
+    private float _currentAngle;
+    private Color _currentColor;
+    private float _currentWidth;
+
+    private Vector3 _centerPosition = new Vector3(2.5f, 4f, 0f);
 
 
     private void Start()
     {
-        commands = new List<Command>();
-        positions = new List<Vector3>();
+        _commands = new List<Command>();
+        _positions = new List<Vector3>();
 
         Reset();
    
@@ -31,15 +37,23 @@ public class GameController : MonoBehaviour
     }
 
 
-    // Run the code and draw the shapes
-    private void RunCode()
+    private void FlushAndGet()
     {
-        commands.Clear();
-        positions.Clear();
+        _commands.Clear();
+        _positions.Clear();
+
+        Reset();
     
         GetCommands();
-   
-        foreach (Command command in commands)
+    }
+
+    private void RunCode()
+    {
+        Debug.Log("Should run");
+        
+        FlushAndGet();
+
+        foreach (Command command in _commands)
         {
             command.Execute();
         }
@@ -50,118 +64,113 @@ public class GameController : MonoBehaviour
 
     private void ClearCode()
     {
+        
+        FlushAndGet();
+
+        foreach (Command command in _commands)
+        {
+            command.Remove();
+        }
  
-        commands.Clear();
-        positions.Clear();
+        _commands.Clear();
+        _positions.Clear();
 
         Reset();
     }
 
     private void Reset()
     {
-        currentPosition = drawPanel.transform.position;
-        currentAngle = 0f;
-        currentColor = Color.black;
-        currentWidth = 1f;
+        _currentPosition = _centerPosition;
+        // _currentPosition += new Vector3(0, 0, 5);
+        _currentAngle = 0f;
+        _currentColor = Color.black;
+        _currentWidth = 0.1f;
         lineRenderer.positionCount = 0;
+
+        _positions.Add(_currentPosition);
     }
 
-   
 
-    // Get the commands from the code panel
     private void GetCommands()
     {
-        for (int i = 0; i < codePanel.transform.childCount; i++)
+        for (int i = 0; i < codePanelContents.childCount; i++)
         {
-            var child = codePanel.transform.GetChild(i).gameObject;
-            var command = child.GetComponent<Command>();
-
-            if (command != null)
+            var child = codePanelContents.GetChild(i).gameObject;
+            
+            if (child.TryGetComponent<Command>(out var command))
             {
-                commands.Add(command);
+                _commands.Add(command);
             }
         }
     }
 
-    // Move the current position by a distance and an angle
-    public void MovePosition(float distance, float angle)
+    public void MovePosition(float distance)
     {
-        float radian = angle * Mathf.Deg2Rad;
-        float dx = distance * Mathf.Cos(radian);
-        float dy = distance * Mathf.Sin(radian);
+        
+        // if(angle != 0f)
+        // {
+        //     _currentAngle -= angle;
+        //     _currentAngle %= 360f;
+        //     angle = _currentAngle;
+        //     _currentAngle = 0f;
+        // }
+        // else
+        // {
+           var angle = _currentAngle;
+            _currentAngle = 0f;
+        // }
 
-        currentPosition.x += dx;
-        currentPosition.y += dy;
+        var radian = angle * Mathf.Deg2Rad;
+        var dx = distance * Mathf.Cos(radian);
+        var dy = distance * Mathf.Sin(radian);
 
-        positions.Add(currentPosition);
+        _currentPosition.x += dx;
+        _currentPosition.y += dy;
+
+        _positions.Add(_currentPosition);
     }
 
-    // Turn the current angle by an angle
     public void TurnAngle(float angle)
     {
-        // Add the angle to the current angle
-        currentAngle += angle;
-        // Wrap the current angle between 0 and 360 degrees
-        currentAngle = currentAngle % 360;
+        _currentAngle -= angle;
+        _currentAngle %= 360f;
+
+        Debug.Log(_currentAngle);
     }
 
     public void SetColor(string color)
     {
-        // Switch on the color
-        switch (color)
+        _currentColor = color switch
         {
-            // If the color is "red"
-            case "red":
-                // Set the current color to red
-                currentColor = Color.red;
-                break;
-            // If the color is "green"
-            case "green":
-                // Set the current color to green
-                currentColor = Color.green;
-                break;
-            // If the color is "blue"
-            case "blue":
-                // Set the current color to blue
-                currentColor = Color.blue;
-                break;
-            // If the color is "yellow"
-            case "yellow":
-                // Set the current color to yellow
-                currentColor = Color.yellow;
-                break;
-            // If the color is "black"
-            case "black":
-                // Set the current color to black
-                currentColor = Color.black;
-                break;
-            // If the color is anything else
-            default:
-                // Set the current color to white
-                currentColor = Color.white;
-                break;
-        }
+            "red" => Color.red,
+            "green" => Color.green,
+            "blue" => Color.blue,
+            "yellow" => Color.yellow,
+            "black" => Color.black,
+            _ => Color.white,
+        };
     }
 
     public void SetWidth(float width)
     {
-        currentWidth = width;
+        _currentWidth = width;
     }
 
-    // Draw the shapes using the line renderer
     public void DrawShapes()
     {
-        lineRenderer.material.color = currentColor;
+        Debug.Log("Draw shapes called");
 
-        lineRenderer.startWidth = currentWidth;
+        lineRenderer.material.color = _currentColor;
 
-        lineRenderer.endWidth = currentWidth;
+        lineRenderer.startWidth = _currentWidth;
 
-        lineRenderer.positionCount = positions.Count;
+        lineRenderer.endWidth = _currentWidth;
 
-        for (int i = 0; i < positions.Count; i++)
+        lineRenderer.positionCount = _positions.Count;
+
+        for (int i = 0; i < _positions.Count; i++)
         {
-            lineRenderer.SetPosition(i, positions[i]);
+            lineRenderer.SetPosition(i, _positions[i]);
         }
     }
 }
