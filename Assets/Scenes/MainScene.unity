@@ -2454,7 +2454,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   codePanelContent: {fileID: 1786426823}
   moveCommandPrefab: {fileID: 3960968678482135586, guid: 163043d815b1f7761aeacbddce031dea, type: 3}
-  turnCommandPrefab: {fileID: 0}
+  turnCommandPrefab: {fileID: 3960968678482135586, guid: 67e156cf0b8e497d9a8ae70b87def79f, type: 3}
   colorCommandPrefab: {fileID: 0}
   widthCommandPrefab: {fileID: 3960968678482135586, guid: dfd227980b499a1da81018b16f840d69, type: 3}
 --- !u!1 &1587468435
@@ -2788,7 +2788,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 0, a: 1}
+  m_Color: {r: 0, g: 0.5176471, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
