@@ -1,7 +1,7 @@
 # Shapes Game
 Simple game made in the Unity game engine to teach coding by using commands to make shapes
 
-![Image Alt text](/screenshot.png)
+![Image Alt text](/screenshot.png
 
 ## How to play
 Click on the command buttons in the bottom center panel to add them to the code panel (top left)
