@@ -1021,7 +1021,7 @@ MonoBehaviour:
   upButton: {fileID: 3840187144565728439}
   downButton: {fileID: 2409898227867036539}
   sliderValueLabel: {fileID: 1691930878116484582}
-  angleInput: {fileID: 4247652342406723201}
+  sliderInput: {fileID: 4247652342406723201}
 --- !u!1 &4704102029233232941
 GameObject:
   m_ObjectHideFlags: 0

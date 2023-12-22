@@ -38,6 +38,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: ColorPicker
+    uniqueID: 3677221123
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

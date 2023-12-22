@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using Utility.Events;
 
 public class GameController : MonoBehaviour
 {
@@ -22,7 +23,7 @@ public class GameController : MonoBehaviour
     private Color _currentColor;
     private float _currentWidth;
 
-    private Vector3 _centerPosition = new Vector3(2.5f, 4f, 0f);
+    private Vector3 _lineRendererStartPosition = new Vector3(2.5f, 4f, 0f);
 
 
     private void Start()
@@ -31,9 +32,24 @@ public class GameController : MonoBehaviour
         _positions = new List<Vector3>();
 
         Reset();
-   
+
         runButton.onClick.AddListener(RunCode);
         clearButton.onClick.AddListener(ClearCode);
+
+        EventBus.Subscribe<OpenColorPicker>(OnOpenColorPicker);
+        EventBus.Subscribe<CloseColorPicker>(OnCloseColorPicker);
+    }
+
+    private void OnOpenColorPicker(OpenColorPicker updateEvent)
+    {
+        runButton.interactable = false;
+        clearButton.interactable = false;
+    }
+
+    private void OnCloseColorPicker(CloseColorPicker updateEvent)
+    {
+        runButton.interactable = true;
+        clearButton.interactable = true;
     }
 
 
@@ -43,35 +59,33 @@ public class GameController : MonoBehaviour
         _positions.Clear();
 
         Reset();
-    
+
         GetCommands();
     }
 
     private void RunCode()
     {
-        Debug.Log("Should run");
-        
         FlushAndGet();
 
         foreach (Command command in _commands)
         {
             command.Execute();
         }
-  
+
         DrawShapes();
     }
 
 
     private void ClearCode()
     {
-        
+
         FlushAndGet();
 
         foreach (Command command in _commands)
         {
             command.Remove();
         }
- 
+
         _commands.Clear();
         _positions.Clear();
 
@@ -80,8 +94,7 @@ public class GameController : MonoBehaviour
 
     private void Reset()
     {
-        _currentPosition = _centerPosition;
-        // _currentPosition += new Vector3(0, 0, 5);
+        _currentPosition = _lineRendererStartPosition;
         _currentAngle = 0f;
         _currentColor = Color.black;
         _currentWidth = 0.1f;
@@ -96,7 +109,7 @@ public class GameController : MonoBehaviour
         for (int i = 0; i < codePanelContents.childCount; i++)
         {
             var child = codePanelContents.GetChild(i).gameObject;
-            
+
             if (child.TryGetComponent<Command>(out var command))
             {
                 _commands.Add(command);
@@ -106,19 +119,9 @@ public class GameController : MonoBehaviour
 
     public void MovePosition(float distance)
     {
-        
-        // if(angle != 0f)
-        // {
-        //     _currentAngle -= angle;
-        //     _currentAngle %= 360f;
-        //     angle = _currentAngle;
-        //     _currentAngle = 0f;
-        // }
-        // else
-        // {
-           var angle = _currentAngle;
-            _currentAngle = 0f;
-        // }
+
+        var angle = _currentAngle;
+        _currentAngle = 0f;
 
         var radian = angle * Mathf.Deg2Rad;
         var dx = distance * Mathf.Cos(radian);
@@ -134,21 +137,11 @@ public class GameController : MonoBehaviour
     {
         _currentAngle -= angle;
         _currentAngle %= 360f;
-
-        Debug.Log(_currentAngle);
     }
 
-    public void SetColor(string color)
+    public void SetColor(Color color)
     {
-        _currentColor = color switch
-        {
-            "red" => Color.red,
-            "green" => Color.green,
-            "blue" => Color.blue,
-            "yellow" => Color.yellow,
-            "black" => Color.black,
-            _ => Color.white,
-        };
+        _currentColor = color;
     }
 
     public void SetWidth(float width)
@@ -158,8 +151,6 @@ public class GameController : MonoBehaviour
 
     public void DrawShapes()
     {
-        Debug.Log("Draw shapes called");
-
         lineRenderer.material.color = _currentColor;
 
         lineRenderer.startWidth = _currentWidth;

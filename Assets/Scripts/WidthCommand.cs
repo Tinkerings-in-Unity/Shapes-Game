@@ -1,38 +1,26 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class WidthCommand : Command
+public class WidthCommand : CommandWithSlider
 {
-    private float _width;
 
-    [SerializeField]
-    private TMP_InputField inputField;
-
-
-    protected override void Start()
+    protected override void Setup()
     {
-        base.Start();
+        base.Setup();
 
-        inputField.onValueChanged.AddListener(delegate { OnInputValueChanged(inputField); });
+        sliderValueLabel.text = "Width: " + (sliderInput.value * 0.1f);
     }
 
-    private void OnInputValueChanged(TMP_InputField inputField)
+    protected override void OnInputValueChanged(Slider input)
     {
-        string inputValue = inputField.text;
+        value = input.value * 0.1f;
 
-        if (float.TryParse(inputValue, out float floatValue))
-        {
-            _width = floatValue;
-        }
-        else
-        {
-            Debug.LogError("Invalid input value");
-        }
-
+        sliderValueLabel.text = "Width: " + value;
     }
 
     public override void Execute()
     {
-        gameController.SetWidth(_width);
+        gameController.SetWidth(value);
     }
 }

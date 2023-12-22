@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Utility.Events;
 
 public class Command : MonoBehaviour
 {
@@ -19,6 +20,23 @@ public class Command : MonoBehaviour
         deleteButton.onClick.AddListener(OnDeleteButtonClick);
         upButton.onClick.AddListener(OnUpButtonClick);
         downButton.onClick.AddListener(OnDownButtonClick);
+
+        EventBus.Subscribe<OpenColorPicker>(OnOpenColorPicker);
+        EventBus.Subscribe<CloseColorPicker>(OnCloseColorPicker);
+    }
+
+    protected virtual void OnOpenColorPicker(OpenColorPicker updateEvent)
+    {
+        deleteButton.interactable = false;
+        upButton.interactable = false;
+        downButton.interactable = false;
+    }
+
+    protected virtual void OnCloseColorPicker(CloseColorPicker updateEvent)
+    {
+        deleteButton.interactable = true;
+        upButton.interactable = true;
+        downButton.interactable = true;
     }
 
     protected void OnDeleteButtonClick()

@@ -762,7 +762,7 @@ MonoBehaviour:
   upButton: {fileID: 1463550918913819038}
   downButton: {fileID: 4365122555694229606}
   sliderValueLabel: {fileID: 1159064464723727001}
-  distanceInput: {fileID: 6407638352078534002}
+  sliderInput: {fileID: 6407638352078534002}
 --- !u!1 &4704102029233232941
 GameObject:
   m_ObjectHideFlags: 0

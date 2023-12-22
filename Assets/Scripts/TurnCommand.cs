@@ -2,37 +2,24 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TurnCommand : Command
+public class TurnCommand : CommandWithSlider
 {
-    private float _angle;
-
-    [SerializeField]
-    private TMP_Text sliderValueLabel;
-
-    [SerializeField]
-    private Slider angleInput;
-
-
-    protected override void Start()
+    protected override void Setup()
     {
-        base.Start();
+        base.Setup();
 
-        angleInput.onValueChanged.AddListener(delegate { OnInputValueChanged(angleInput); });
-
-        sliderValueLabel.text = "Angle: " + (angleInput.value * 5f);
+        sliderValueLabel.text = "Angle: " + (sliderInput.value * 5f);
     }
 
-    private void OnInputValueChanged(Slider input)
+    protected override void OnInputValueChanged(Slider input)
     {
+        value = input.value * 5f;
 
-       _angle= input.value * 5f;
-
-        sliderValueLabel.text = "Angle: " + _angle;
-
+        sliderValueLabel.text = "Angle: " + value;
     }
 
     public override void Execute()
     {
-        gameController.TurnAngle(_angle);
+        gameController.TurnAngle(value);
     }
 }
