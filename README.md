@@ -1,7 +1,9 @@
 # Shapes Game
 Simple game made in the Unity game engine to teach coding by using commands to make shapes
 
-![Image Alt text](./screenshot.png)
+![Image](./screenshot.png
+
+![alt text](https://github.com/ggombiro/Shapes-Game/blob/main/screenshot.png?raw=true
 
 ## How to play
 Click on the command buttons in the bottom center panel to add them to the code panel (top left)
